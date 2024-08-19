@@ -42,7 +42,7 @@ func (Handler) CaddyModule() caddy.ModuleInfo {
 //go:embed dist/*
 var index embed.FS
 
-// Provision sets up the CrowdSec handler.
+// Provision sets up the RiverUI handler.
 func (h *Handler) Provision(ctx caddy.Context) error {
 	h.logger = ctx.Slogger()
 
@@ -111,7 +111,7 @@ func (h *Handler) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	return nil
 }
 
-// parseCaddyfileHandlerDirective parses the `crowdsec` Caddyfile directive
+// parseRiverUIHandlerDirective parses the `riverui` Caddyfile directive
 func parseRiverUIHandlerDirective(h httpcaddyfile.Helper) (caddyhttp.MiddlewareHandler, error) {
 	var handler Handler
 	err := handler.UnmarshalCaddyfile(h.Dispenser)

@@ -59,5 +59,6 @@ localhost {
 * Fix CORS configuration option and ensure working as expected
 * Ensure handler is provisioned lazily (i.e. no active DB connection establishment)
 * Support running on host/port other than https://localhost:80, which is currently hardcoded in the web app build
+* Split frontend and backend handlers?
 * Example with authentication, using caddy-security (AuthCrunch)?
 * ...
