@@ -1,0 +1,9 @@
+{
+    debug
+    order riverui first
+}
+
+localhost {
+    log
+    riverui
+}
