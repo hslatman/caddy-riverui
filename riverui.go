@@ -42,11 +42,14 @@ func (Handler) CaddyModule() caddy.ModuleInfo {
 //go:embed dist/*
 var index embed.FS
 
-// Provision sets up the RiverUI handler.
+// Provision sets up the River UI handler.
 func (h *Handler) Provision(ctx caddy.Context) error {
 	h.logger = ctx.Slogger()
 
-	// set the default RiverUI web app to embedded build
+	// TODO: ~gc/vite-server replacement of variables at runtime
+	// TODO: after replacing, recalculate hashes, if needed?
+
+	// set the default River UI web app to embedded build
 	ui.Index = index
 
 	dbURL := os.Getenv("DATABASE_URL")   // TODO: make configurable through Caddyfile too
@@ -67,13 +70,13 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 		return fmt.Errorf("error creating river client: %w", err)
 	}
 
-	logger := slog.Default() // TODO: support RIVER_DEBUG; log level
+	//logger := slog.Default() // TODO: support RIVER_DEBUG; log level
 	pathPrefix := "/"
 
 	handlerOpts := &riverui.HandlerOpts{
 		Client: client,
 		DBPool: dbPool,
-		Logger: logger,
+		Logger: h.logger,
 		Prefix: pathPrefix,
 	}
 
