@@ -2,7 +2,6 @@ package riverui
 
 import (
 	"context"
-	"embed"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -15,9 +14,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
-	"github.com/riverqueue/riverui"
-	"github.com/riverqueue/riverui/ui"
 	"github.com/rs/cors"
+	"riverqueue.com/riverui"
 )
 
 type Handler struct {
@@ -39,18 +37,9 @@ func (Handler) CaddyModule() caddy.ModuleInfo {
 	}
 }
 
-//go:embed dist/*
-var index embed.FS
-
 // Provision sets up the River UI handler.
 func (h *Handler) Provision(ctx caddy.Context) error {
 	h.logger = ctx.Slogger()
-
-	// TODO: ~gc/vite-server replacement of variables at runtime
-	// TODO: after replacing, recalculate hashes, if needed?
-
-	// set the default River UI web app to embedded build
-	ui.Index = index
 
 	dbURL := os.Getenv("DATABASE_URL")   // TODO: make configurable through Caddyfile too
 	dbPool, err := getDBPool(ctx, dbURL) // TODO: make lazy during provisioning
@@ -80,13 +69,13 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 		Prefix: pathPrefix,
 	}
 
-	handler, err := riverui.NewHandler(handlerOpts)
+	server, err := riverui.NewServer(handlerOpts)
 	if err != nil {
-		return fmt.Errorf("error creating handler: %w", err)
+		return fmt.Errorf("error creating server: %w", err)
 	}
 
 	// TODO: wrap logging, otel, metrics; similar to the riverui binary?
-	h.riveruiHandler = corsHandler.Handler(handler)
+	h.riveruiHandler = corsHandler.Handler(server.Handler())
 
 	return nil
 }
