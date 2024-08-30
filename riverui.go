@@ -19,9 +19,9 @@ import (
 )
 
 type Handler struct {
-	logger         *slog.Logger
-	riveruiHandler http.Handler
-	dbPool         *pgxpool.Pool
+	logger *slog.Logger
+	server http.Handler
+	dbPool *pgxpool.Pool
 }
 
 func init() {
@@ -62,20 +62,20 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 	//logger := slog.Default() // TODO: support RIVER_DEBUG; log level
 	pathPrefix := "/"
 
-	handlerOpts := &riverui.HandlerOpts{
+	serverOpts := &riverui.ServerOpts{
 		Client: client,
-		DBPool: dbPool,
+		DB:     dbPool,
 		Logger: h.logger,
 		Prefix: pathPrefix,
 	}
 
-	server, err := riverui.NewServer(handlerOpts)
+	server, err := riverui.NewServer(serverOpts)
 	if err != nil {
 		return fmt.Errorf("error creating server: %w", err)
 	}
 
 	// TODO: wrap logging, otel, metrics; similar to the riverui binary?
-	h.riveruiHandler = corsHandler.Handler(server.Handler())
+	h.server = corsHandler.Handler(server)
 
 	return nil
 }
@@ -88,7 +88,7 @@ func (h *Handler) Validate() error {
 
 // ServeHTTP is the Caddy handler for serving HTTP requests
 func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
-	h.riveruiHandler.ServeHTTP(w, r)
+	h.server.ServeHTTP(w, r)
 	return nil
 }
 
