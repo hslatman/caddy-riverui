@@ -8,7 +8,7 @@ require (
 	github.com/riverqueue/river v0.11.4
 	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.11.4
 	github.com/rs/cors v1.11.0
-	riverqueue.com/riverui v0.5.0
+	riverqueue.com/riverui v0.5.1
 )
 
 require (
