@@ -62,20 +62,21 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 	//logger := slog.Default() // TODO: support RIVER_DEBUG; log level
 	pathPrefix := "/"
 
-	serverOpts := &riverui.ServerOpts{
-		Client: client,
-		DB:     dbPool,
-		Logger: h.logger,
-		Prefix: pathPrefix,
+	endpoints := riverui.NewEndpoints(client, nil)
+
+	handlerOpts := &riverui.HandlerOpts{
+		Endpoints: endpoints,
+		Logger:    h.logger,
+		Prefix:    pathPrefix,
 	}
 
-	server, err := riverui.NewServer(serverOpts)
+	handler, err := riverui.NewHandler(handlerOpts)
 	if err != nil {
-		return fmt.Errorf("error creating server: %w", err)
+		return fmt.Errorf("creating handler: %w", err)
 	}
 
 	// TODO: wrap logging, otel, metrics; similar to the riverui binary?
-	h.server = corsHandler.Handler(server)
+	h.server = corsHandler.Handler(handler)
 
 	return nil
 }
