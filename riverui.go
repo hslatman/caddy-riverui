@@ -12,16 +12,16 @@ import (
 	"github.com/caddyserver/caddy/v2/caddyconfig/httpcaddyfile"
 	"github.com/caddyserver/caddy/v2/modules/caddyhttp"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jub0bs/cors"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
-	"github.com/rs/cors"
 	"riverqueue.com/riverui"
 )
 
 type Handler struct {
-	logger *slog.Logger
-	server http.Handler
-	dbPool *pgxpool.Pool
+	logger  *slog.Logger
+	handler http.Handler
+	dbPool  *pgxpool.Pool
 }
 
 func init() {
@@ -48,11 +48,14 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 	}
 	h.dbPool = dbPool
 
-	corsOrigins := []string{"*"} // TODO: fix; make configurable
-	corsHandler := cors.New(cors.Options{
-		AllowedMethods: []string{"GET", "HEAD", "POST", "PUT"},
-		AllowedOrigins: corsOrigins,
+	cors, err := cors.NewMiddleware(cors.Config{
+		Origins:        []string{"*"}, // TODO: fix; make configurable
+		Methods:        []string{http.MethodGet, http.MethodPost, http.MethodHead, http.MethodPut},
+		RequestHeaders: []string{"Authorization"},
 	})
+	if err != nil {
+		return fmt.Errorf("creating CORS config: %w", err)
+	}
 
 	client, err := river.NewClient(riverpgxv5.New(dbPool), &river.Config{})
 	if err != nil {
@@ -76,7 +79,7 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 	}
 
 	// TODO: wrap logging, otel, metrics; similar to the riverui binary?
-	h.server = corsHandler.Handler(handler)
+	h.handler = cors.Wrap(handler)
 
 	return nil
 }
@@ -89,7 +92,7 @@ func (h *Handler) Validate() error {
 
 // ServeHTTP is the Caddy handler for serving HTTP requests
 func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
-	h.server.ServeHTTP(w, r)
+	h.handler.ServeHTTP(w, r)
 	return nil
 }
 

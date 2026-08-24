@@ -1,13 +1,13 @@
 module github.com/hslatman/caddy-riverui
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/caddyserver/caddy/v2 v2.8.4
 	github.com/jackc/pgx/v5 v5.10.0
+	github.com/jub0bs/cors v1.1.0
 	github.com/riverqueue/river v0.44.1
 	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.44.1
-	github.com/rs/cors v1.11.1
 	riverqueue.com/riverui v0.18.1
 )
 
