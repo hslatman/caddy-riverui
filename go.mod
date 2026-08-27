@@ -6,9 +6,9 @@ require (
 	github.com/caddyserver/caddy/v2 v2.8.4
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/jub0bs/cors v1.1.0
-	github.com/riverqueue/river v0.44.1
-	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.44.1
-	riverqueue.com/riverui v0.18.1
+	github.com/riverqueue/river v0.45.0
+	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.45.0
+	riverqueue.com/riverui v0.19.0
 )
 
 require (
@@ -96,10 +96,10 @@ require (
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/quic-go v0.44.0 // indirect
-	github.com/riverqueue/apiframe v0.0.0-20260817233638-c78932f9ac68 // indirect
-	github.com/riverqueue/river/riverdriver v0.44.1 // indirect
-	github.com/riverqueue/river/rivershared v0.44.1 // indirect
-	github.com/riverqueue/river/rivertype v0.44.1 // indirect
+	github.com/riverqueue/apiframe v0.0.0-20260824213828-b5f5e94d6b98 // indirect
+	github.com/riverqueue/river/riverdriver v0.45.0 // indirect
+	github.com/riverqueue/river/rivershared v0.45.0 // indirect
+	github.com/riverqueue/river/rivertype v0.45.0 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
